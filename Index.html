@@ -28,18 +28,15 @@
 </head>
 <body onload="moving()">
 <h1 style="text-align: center">PING PONG GAME</h1>
-<div style="position: absolute;margin-left: 370px; text-align: center">
-    <h2 id="score1"></h2>
-</div>
 
-<div style="position: absolute;margin-left: 1005px;text-align: center">
-    <h2 id="score2"></h2>
-</div>
+<h2 style="position: absolute;margin-left: 370px; text-align: center" id="score1"></h2>
 
-<div>
-    <canvas id="myCanvas" width="400" height="550" style="border: 5px solid darkgreen"></canvas>
-</div>
-<button onclick="resetTheGame()">Reset Game</button>
+
+<h2 style="position: absolute;margin-left: 1005px;text-align: center" id="score2"></h2>
+
+<canvas id="myCanvas" width="400" height="550" style="border: 5px solid darkgreen"></canvas>
+
+<button onclick="resetTheGame()"><b>Reset Game</b></button>
 <script>
 
     let canvas = document.getElementById('myCanvas')
