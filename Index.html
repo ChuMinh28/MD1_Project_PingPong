@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Ping Pong</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <style>
         canvas {
             margin: auto;
@@ -27,16 +31,25 @@
     <script src="Paddle.js"></script>
 </head>
 <body onload="moving()">
-<h1 style="text-align: center">PING PONG GAME</h1>
 
-<h2 style="position: absolute;margin-left: 370px; text-align: center" id="score1"></h2>
+<h1 style="text-align: center;margin-top: 15px">PING PONG GAME</h1>
 
-
-<h2 style="position: absolute;margin-left: 1005px;text-align: center" id="score2"></h2>
-
-<canvas id="myCanvas" width="400" height="550" style="border: 5px solid darkgreen"></canvas>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <h2 style=" text-align: center" id="score1"></h2>
+        </div>
+        <div class="col-sm">
+            <canvas id="myCanvas" width="400" height="550" style="border: 5px solid darkgreen"></canvas>
+        </div>
+        <div class="col-sm">
+            <h2 style="text-align: center" id="score2"></h2>
+        </div>
+    </div>
+</div>
 
 <button onclick="resetTheGame()"><b>Reset Game</b></button>
+
 <script>
 
     let canvas = document.getElementById('myCanvas')
@@ -138,12 +151,12 @@
     function ballHitThePaddles() {
         if (xBall + radius >= paddle2.getX() && xBall + radius <= paddle2.getWidth() + paddle2.getX()
             && yBall + radius >= heightCanvas - 15) {
-            // hit.play()
+            hit.play()
             dY3 = -dY3
         }
         if (xBall + radius >= paddle1.getX() && xBall + radius <= paddle1.getWidth() + paddle1.getX()
             && yBall + radius <= heightCanvas - 515) {
-            // hit.play()
+            hit.play()
             dY3 = -dY3
         }
     }
