@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ping Pong</title>
+    <style>
+        canvas {
+            margin: auto;
+            display: block;
+        }
+
+        body {
+            background-color: cadetblue;
+        }
+
+        canvas {
+            background-color: black;
+        }
+
+        button {
+            background-color: green;
+            margin: auto;
+            display: block;
+            height: 50px;
+        }
+    </style>
+    <script src="Paddle.js"></script>
+</head>
+<body onload="moving()">
+<h1 style="text-align: center">PING PONG GAME</h1>
+<div style="position: absolute;margin-left: 370px; text-align: center">
+    <h2 id="score1"></h2>
+</div>
+
+<div style="position: absolute;margin-left: 1005px;text-align: center">
+    <h2 id="score2"></h2>
+</div>
+
+<div>
+    <canvas id="myCanvas" width="400" height="550" style="border: 5px solid darkgreen"></canvas>
+</div>
+<button onclick="resetTheGame()">Reset Game</button>
+<script>
+
+    let canvas = document.getElementById('myCanvas')
+    let ctx = canvas.getContext('2d')
+    let widthCanvas = canvas.width
+    let heightCanvas = canvas.height
+    let isGameOver = false
+    let scorePaddle1 = 0
+    let scorePaddle2 = 0
+    let theme = new Audio()
+    let score = new Audio()
+    let glory = new Audio()
+    let laugh = new Audio()
+    let hit = new Audio()
+
+    theme.src = 'audio/MortalKombat.mp3'
+    score.src = 'audio/Siu.mp3'
+    glory.src = 'audio/Glory.mp3'
+    laugh.src = 'audio/Laugh.mp3'
+    hit.src = 'audio/hit.mp3'
+
+    //Draw Paddle 1
+    let X1 = widthCanvas / 2 - 50
+    let Y1 = heightCanvas - 540
+    let W1 = 100
+    let H1 = 10
+    let color1 = 'cyan'
+    let paddle1 = new Paddle(X1, Y1, W1, H1, color1)
+    paddle1.drawPaddle(ctx)
+
+    // Draw Paddle2
+    let X2 = widthCanvas / 2 - 50
+    let Y2 = heightCanvas - 20
+    let W2 = 100
+    let H2 = 10
+    let color2 = 'cyan'
+    let paddle2 = new Paddle(X2, Y2, W2, H2, color2)
+    paddle2.drawPaddle(ctx)
+
+    //Draw Ball
+    let xBall = widthCanvas / 2
+    let yBall = heightCanvas / 2
+    let dX3 = 1
+    let dY3 = 1
+    let radius = 10
+
+    function drawBall() {
+        ctx.beginPath();
+        ctx.fillStyle = 'red'
+        ctx.arc(xBall, yBall, radius, 0, 2 * Math.PI, true)
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    // Move Paddle
+    function movePaddle(e) {
+        switch (e.keyCode) {
+            case 37:
+                if (paddle1.getX() < 0) {
+                    return;
+                }
+                paddle1.moveLeft()
+                break
+            case 39:
+                if (paddle1.getX() > widthCanvas - paddle1.getWidth()) {
+                    return;
+                }
+                paddle1.moveRight()
+                break
+            case 65:
+                if (paddle2.getX() < 0) {
+                    return;
+                }
+                paddle2.moveLeft()
+                break
+            case 68:
+                if (paddle2.getX() > widthCanvas - paddle2.getWidth()) {
+                    return;
+                }
+                paddle2.moveRight()
+                break
+        }
+    }
+
+    // Ball Hit The Wall And Ball Position
+    function ballHitTheWall() {
+        if (xBall < radius || xBall > widthCanvas - radius) {
+            hit.play()
+            dX3 = -dX3
+        }
+    }
+
+    function ballPosition() {
+        xBall += dX3
+        yBall += dY3
+    }
+
+    //Ball Hit The Paddle
+    function ballHitThePaddles() {
+        if (xBall + radius >= paddle2.getX() && xBall + radius <= paddle2.getWidth() + paddle2.getX()
+            && yBall + radius >= heightCanvas - 15) {
+            // hit.play()
+            dY3 = -dY3
+        }
+        if (xBall + radius >= paddle1.getX() && xBall + radius <= paddle1.getWidth() + paddle1.getX()
+            && yBall + radius <= heightCanvas - 515) {
+            // hit.play()
+            dY3 = -dY3
+        }
+    }
+
+    // Running Game
+    function runningGame() {
+        if (!isGameOver) {
+            theme.play()
+            clearCanvas()
+            drawAgain()
+            ballHitTheWall()
+            ballHitThePaddles()
+            ballPosition()
+            checkForTheWinner()
+            requestAnimationFrame(runningGame)
+        }
+    }
+
+    // Check Score
+    function checkForTheWinner() {
+        if (yBall > heightCanvas - radius) {
+            score.play()
+            scorePaddle1++
+            scoreDataPaddle1.push(scorePaddle1)
+            window.localStorage.setItem('Score_Payer1:', JSON.stringify(scorePaddle1))
+            document.getElementById('score1').innerHTML = 'Player 1 Score<br>' + scorePaddle1
+            xBall = widthCanvas / 2
+            yBall = heightCanvas / 2
+            dY3 = -dY3
+        }
+        if (yBall < radius) {
+            laugh.play()
+            scorePaddle2++
+            scoreDataPaddle2.push(scorePaddle2)
+            window.localStorage.setItem('Score_Player2:', JSON.stringify(scorePaddle2))
+            document.getElementById('score2').innerHTML = 'Player 2 Score<br>' + scorePaddle2
+            xBall = widthCanvas / 2
+            yBall = heightCanvas / 2
+            dY3 = -dY3
+        }
+        if (scorePaddle1 === 10) {
+            theme.pause()
+            glory.play()
+            isGameOver = true
+            ctx.font = '30px Ariel Signature'
+            ctx.fillText('Player 1 Win', widthCanvas / 2 - 80, heightCanvas / 2)
+        }
+        if (scorePaddle2 === 10) {
+            theme.pause()
+            glory.play()
+            isGameOver = true
+            ctx.font = '30px Ariel Signature'
+            ctx.fillText('Player 2 Win', widthCanvas / 2 - 80, heightCanvas / 2)
+        }
+    }
+
+    // Reset The Game
+    function resetTheGame() {
+        location.reload()
+    }
+
+    function moving() {
+        window.addEventListener('keydown', movePaddle)
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, widthCanvas, heightCanvas)
+    }
+
+    function drawAgain() {
+        paddle1.drawPaddle(ctx)
+        paddle2.drawPaddle(ctx)
+        drawBall()
+    }
+
+    ctx.font = '50px Ariel Signature'
+    ctx.fillText('Play', widthCanvas / 2 - 45, heightCanvas / 2, 100)
+    canvas.onclick = function () {
+        runningGame()
+    }
+
+    let scoreDataPaddle1 = []
+    let scoreDataPaddle2 = []
+
+</script>
+</body>
+</html>
